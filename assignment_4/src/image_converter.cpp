@@ -8,6 +8,7 @@
 //#include <opencv2/videoio/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "iostream"
+#include "string.h"
 
 static const std::string OPENCV_WINDOW = "Image window";
 
@@ -108,13 +109,39 @@ public:
                 cv::circle(cflowmap, cv::Point(x,y), 2, CV_RGB(0, 255, 0), -1);
             }
     }
- 
+
+	std::string type2str(int type) {
+		std::string r;
+
+		uchar depth = type & CV_MAT_DEPTH_MASK;
+		uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+		switch ( depth ) {
+			case CV_8U:  r = "8U"; break;
+			case CV_8S:  r = "8S"; break;
+			case CV_16U: r = "16U"; break;
+			case CV_16S: r = "16S"; break;
+			case CV_32S: r = "32S"; break;
+			case CV_32F: r = "32F"; break;
+			case CV_64F: r = "64F"; break;
+			default:     r = "User"; break;
+		}
+
+		r += "C";
+		r += (chans+'0');
+
+		return r;
+	}
+
     void OpticalFlow()
     {
+ 
+        double  min, max;
+
         // cv_bridge::CvImage out_frame;
         sensor_msgs::ImagePtr out_frame;
 
-        cv::Mat flowxy, flowx, flowy, image, prev_rgbframe;
+        cv::Mat flowxy_mag, flowx, flowy, image, prev_rgbframe, flow_th;
 
         cv::Mat rgb_flow;
     
@@ -140,17 +167,41 @@ public:
 
                 //cv::Mat planes[] = {flowx, flowy};
                 cv::vector<cv::Mat> planes(2);
-                split(flowxy, planes);
+                split(flow, planes);
                 flowx = planes[0];
                 flowy = planes[1];        
+                // cv::minMaxLoc(flow, &min, &max);
+                magnitude(flowx, flowy, flowxy_mag);
+                cv::minMaxLoc(flowxy_mag, &min, &max);
+		cv::threshold(flowxy_mag, flow_th, 10, 255, 0);
+		
+		int dilation_type = cv::MORPH_RECT, dilation_size = 10;
+		cv::Mat element = getStructuringElement(dilation_type, cv::Size(10, 10));
+		cv::erode(flow_th, flow_th, element);		
+		cv::dilate(flow_th, flow_th, element); // confirm same src/dst works
 
-                //ROS_INFO("Flow ", flow);
+		flow_th.convertTo(flow_th, CV_8U);
+		cv::vector<cv::vector<cv::Point> > contours;
+		cv::vector<cv::Vec4i> hierarchy;
+		//cv::findContours(flow_th, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+		cv::findContours(flow_th, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+		//cv::Mat drawing = cv::Mat::zeros( prev_grayframe.size(), CV_8UC3 );
+		//cv::RNG rng(12345);
+		//for( int i = 0; i< contours.size(); i++ )
+		//{
+		//    cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+		//    cv::drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, cv::Point() );
+		//}    
+		std::string ty = type2str( flow_th.type() );
+		ROS_INFO("Matrix: %s %dx%d \n", ty.c_str(), flow_th.cols, flow_th.rows );
+
+                ROS_INFO("Flow Mat: %f %f", min, max);
 
 
                 // colorizeFlow(flowx, flowy, image);
                 
-                drawOptFlowMap(flow, prev_rgbframe, 16, 1.5);
-                cv::imshow(OPENCV_WINDOW, prev_rgbframe);
+                // drawOptFlowMap(flow, prev_rgbframe, 16, 1.5);
+                cv::imshow(OPENCV_WINDOW, flow_th);
                 //cv::imshow(OPENCV_WINDOW, flowx);
                 cv::waitKey(3);
 
