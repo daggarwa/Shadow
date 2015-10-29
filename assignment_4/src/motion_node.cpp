@@ -1,3 +1,4 @@
+#include "a53094896_assignment_4/MvK.h"
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <iostream>
@@ -9,11 +10,35 @@
 #include <sensor_msgs/image_encodings.h>
 #include <string.h>
 
+int choice;
+
+bool change_mode (a53094896_assignment_4::MvK::Request &req,
+		a53094896_assignment_4::MvK::Response &res)
+{
+	res.o = 0; // all okay
+	if (req.mode == 0 or req.mode == 1 or req.mode == 2) choice = req.mode;
+	if (req.mode == 0) ROS_INFO("requested mode: raw video");
+	else if (req.mode == 1) ROS_INFO("requested mode: farneback");
+	else if (req.mode == 2) ROS_INFO("requested mode: MOG2");
+	else
+	{
+		ROS_INFO("requested mode: unknown");
+		res.o = 1; // "error"
+		choice = 0;
+	}
+	
+	if (res.o == 0) ROS_INFO("service request accepted");
+	else ROS_INFO("service request rejected; reverting to raw video");
+	
+	return true;
+}
+
 class ImageConverter
 {
 	private:
 
-	ros::NodeHandle nh_;
+	ros::NodeHandle nh1_;
+
 	image_transport::ImageTransport it_;
 	image_transport::Subscriber image_sub_;
 	image_transport::Publisher image_pub_;
@@ -22,11 +47,11 @@ class ImageConverter
 
 	public:
 
-	ImageConverter() : it_(nh_)
-	{
+	ImageConverter() : it_(nh1_)
+	{	
 		// subscribe to input video feed and publish output video feed
 		image_sub_ = it_.subscribe ("/usb_cam/image_raw", 1, &ImageConverter::imageCb, this);
-		image_pub_ = it_.advertise ("/image_converter/output_video", 1);
+		image_pub_ = it_.advertise ("/motion_node/output", 1);
 	}
 
 	void imageCb (const sensor_msgs::ImageConstPtr& msg)
@@ -65,19 +90,24 @@ class ImageConverter
 };
 
 int main (int argc, char** argv)
-{
+{	
 	ros::init (argc, argv, "motion_node");
 	ImageConverter ic;
 	
-	int choice = 2;
-	if (choice == 0)
-		ic.RawVideo();
-	else if (choice == 1)
-		ic.OpticalFlow();
-	else if (choice == 2)
-		ic.MOG2();
-	else std::cerr << "please \
-		fix <choice>";
-				
+	ros::NodeHandle nh2;
+	ros::ServiceServer ser = nh2.advertiseService("motion_mode_kb", change_mode);
+	
+	choice = 1;
+	while(1)
+	{
+		if (choice == 0)
+			ic.RawVideo();
+		else if (choice == 1)
+			ic.OpticalFlow();
+		else if (choice == 2)
+			ic.MOG2();
+		else ROS_INFO("error: incorrent choice");
+	}
+	
 	return 0;
 }

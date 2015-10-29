@@ -12,7 +12,7 @@ cv::Scalar color = cv::Scalar (0, 0, 255); // BGR?
 for (int i = 0; i< contours.size(); i++)
 {
 	cv::approxPolyDP (cv::Mat(contours[i]), contours_poly[i], 3, true);
-	if ((contourArea(contours_poly[i]) < 500) || (contours_poly[i].size() < 20))
+	if (contourArea(contours_poly[i]) < 500 or contours_poly[i].size() < 20)
 	{
 		//ROS_INFO("Skipped for area: %f size: ", contourArea(contours[i]));
 		continue;
@@ -48,5 +48,5 @@ for (int i=0; i<boundRect.size(); i++)
 for (int i = 0; i< boundRectRefined.size(); i++)
 {
 	cv::rectangle (current, boundRectRefined[i].tl(),
-		boundRectRefined[i].br(), color, 2, 8, 0);
+			boundRectRefined[i].br(), color, 2, 8, 0);
 }
