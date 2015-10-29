@@ -1,5 +1,5 @@
 
-	void MOG2BackgroundSubtraction()
+	void MOG2()
 	{
 		cv::BackgroundSubtractorMOG2 bg (5, 100);
 				
@@ -29,9 +29,7 @@
 				
 				#include "bounding_boxes.hpp"
 
-				//cv::imshow (OPENCV_WINDOW, fgMaskMOG2);
-				//cv::imshow ("THRESHOLD", flow_th);
-				cv::imshow ("Motion (Background Subtration)", current_grayframe);
+				cv::imshow ("MOG2", current);
 				cv::waitKey(1);
 
 				// cv_bridge::CvImage out_msg;

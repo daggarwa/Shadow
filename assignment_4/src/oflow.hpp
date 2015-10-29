@@ -6,7 +6,7 @@
 		sensor_msgs::ImagePtr out_frame;
 		cv::Mat rgb_flow, flow_th, flow_contours;
 		
-		cv::Mat flow_mag, flow_x, flow_y;
+		cv::Mat prev_grayframe, flow_mag, flow_x, flow_y;
 		
 		cv::Mat d_element = getStructuringElement (cv::MORPH_ELLIPSE, cv::Size(10, 10));
 		cv::Mat e_element = getStructuringElement (cv::MORPH_ELLIPSE, cv::Size(5, 5));
@@ -20,7 +20,7 @@
 		{
 			if (!current_grayframe.empty())
 			{
-				// Operation on Flow Image 
+				// Operation on Flow "Image" 
 				cv::calcOpticalFlowFarneback (prev_grayframe, current_grayframe,
 					flow, 0.5, 1, 5, 3, 5, 1.1, cv::OPTFLOW_FARNEBACK_GAUSSIAN);
 				
@@ -53,9 +53,7 @@
 				
 				#include "bounding_boxes.hpp"
 						
-				//cv::imshow (OPENCV_WINDOW, flow_th);
-				//cv::imshow ("FLOW MAG", flow_mag);
-				cv::imshow ("Motion Detection (Farneback)", current_grayframe);
+				cv::imshow ("Farneback", current);
 				cv::waitKey(1);
 
 				out_frame = cv_bridge::CvImage (std_msgs::Header(), "bgr8", rgb_flow).toImageMsg();

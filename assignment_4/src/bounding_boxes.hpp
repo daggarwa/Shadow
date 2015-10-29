@@ -8,7 +8,7 @@ cv::vector<cv::vector<cv::Point> > contours_poly (contours.size());
 cv::vector<cv::Rect> boundRect;
 cv::vector<cv::Rect> boundRectRefined;
 int count = 0;
-cv::Scalar color = cv::Scalar (255, 0, 0);
+cv::Scalar color = cv::Scalar (0, 0, 255); // BGR?
 for (int i = 0; i< contours.size(); i++)
 {
 	cv::approxPolyDP (cv::Mat(contours[i]), contours_poly[i], 3, true);
@@ -47,6 +47,6 @@ for (int i=0; i<boundRect.size(); i++)
 
 for (int i = 0; i< boundRectRefined.size(); i++)
 {
-	cv::rectangle (current_grayframe, boundRectRefined[i].tl(),
+	cv::rectangle (current, boundRectRefined[i].tl(),
 		boundRectRefined[i].br(), color, 2, 8, 0);
 }

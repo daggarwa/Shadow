@@ -193,9 +193,9 @@ include_directories(
 ## Build write_my_name
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(image_converter src/image_converter.cpp)
-target_link_libraries(image_converter ${catkin_LIBRARIES})
-add_dependencies(image_converter a53094896_assignment_4_generate_messages_cpp)
+add_executable(motion_node src/motion_node.cpp)
+target_link_libraries(motion_node ${catkin_LIBRARIES})
+add_dependencies(motion_node a53094896_assignment_4_generate_messages_cpp)
 
 ## Specify additional locations of header files
 include_directories(
