@@ -10,12 +10,12 @@
 #include <sensor_msgs/image_encodings.h>
 #include <string.h>
 
-int choice;
+int choice; // processing mode to display
 
 bool change_mode (a53094896_assignment_4::MvK::Request &req,
 		a53094896_assignment_4::MvK::Response &res)
 {
-	res.o = 0; // all okay
+	res.o = 0; // all okay, i.e. mode changed
 	if (req.mode == 0 or req.mode == 1 or req.mode == 2) choice = req.mode;
 	if (req.mode == 0) ROS_INFO("requested mode: raw video");
 	else if (req.mode == 1) ROS_INFO("requested mode: farneback");
@@ -23,12 +23,12 @@ bool change_mode (a53094896_assignment_4::MvK::Request &req,
 	else
 	{
 		ROS_INFO("requested mode: unknown");
-		res.o = 1; // "error"
+		res.o = 1; // "error", i.e. mode reset to default (raw video feed)
 		choice = 0;
 	}
 	
 	if (res.o == 0) ROS_INFO("service request accepted");
-	else ROS_INFO("service request rejected; reverting to raw video");
+	else ROS_INFO("service request rejected; reverting to raw");
 	
 	return true;
 }

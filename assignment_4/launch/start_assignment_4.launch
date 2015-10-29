@@ -9,7 +9,8 @@
 		<param name="io_method" value="mmap"/>
 	</node>
   
-	<node name="motion_detector_node" pkg="a53094896_assignment_4" type="motion_node"/>
+	<node name="motion_detector_node" pkg="a53094896_assignment_4"
+			type="motion_node" output="screen"/>
 
 	<node name="rqt_image_viewer" pkg="rqt_image_view" type="rqt_image_view"/>
 
