@@ -1,7 +1,7 @@
 
 	void MOG2()
 	{
-		cv::BackgroundSubtractorMOG2 bg (5, 100);
+		cv::BackgroundSubtractorMOG2 bg (5, 36);
 				
 		sensor_msgs::ImagePtr out_frame;
 		cv::Mat flow_th, flow_contours, fgMaskMOG2;

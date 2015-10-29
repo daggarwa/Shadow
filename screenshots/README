@@ -1,0 +1,2 @@
+Please note that there are some unknown audio-related error messages appearing (only initially) on the terminal even when nothing seems to be going wrong, which is why the keyboard UI has been shown with such output hidden (using roslaunch ... 2>/dev/null).
+

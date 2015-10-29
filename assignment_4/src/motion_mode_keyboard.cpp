@@ -9,10 +9,10 @@ int main (int argc, char **argv)
 	ros::ServiceClient cli = n.serviceClient<a53094896_assignment_4::MvK>("motion_mode_kb");
 	a53094896_assignment_4::MvK s;
 
-	ROS_INFO("");
+	ROS_INFO(" ............................................. ");
 	ROS_INFO("***********************************************");
 	ROS_INFO("Note: Enter mode# 0/1/2 for Raw/Farneback/MOG2.");
-	ROS_INFO("***********************************************");
+	ROS_INFO("***********************************************\n");
 
 	while(1)
 	{
