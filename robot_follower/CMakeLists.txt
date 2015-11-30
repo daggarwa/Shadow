@@ -192,9 +192,13 @@ include_directories(
 
 ## Build write_my_name
 
+#catkin_install_python(PROGRAMS 
+#  src/face_node.py
+#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/face_node)
+
 catkin_install_python(PROGRAMS 
-  src/face_node.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/face_node)
+  src/get_tf.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/get_tf)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
