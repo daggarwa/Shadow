@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -47,11 +48,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  all_faces.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -68,14 +68,14 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
-################################################
+              ################################################
 
 ## To declare and build dynamic reconfigure parameters within this
 ## package, follow these steps:
@@ -105,7 +105,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES robot_follower
-#  CATKIN_DEPENDS roscpp rospy std_msgs image_transport cv_bridge sensor_msgs
+ CATKIN_DEPENDS message_runtime roscpp rospy std_msgs
+ image_transport cv_bridge sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -192,9 +193,9 @@ include_directories(
 
 ## Build write_my_name
 
-#catkin_install_python(PROGRAMS 
-#  src/face_node.py
-#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/face_node)
+catkin_install_python(PROGRAMS 
+  src/face_node.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/face_node)
 
 catkin_install_python(PROGRAMS 
   src/get_tf.py
@@ -210,7 +211,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 #target_link_libraries(face_node ${catkin_LIBRARIES})
 #add_dependencies(face_node robot_follower_generate_messages_py)
 
-find_package(OpenCV 2.4.10 REQUIRED)
+find_package(OpenCV 2.4.8 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 #target_link_libraries(face_detector ${OpenCV_LIBS})
 #target_link_libraries(face_node ${OpenCV_LIBS})

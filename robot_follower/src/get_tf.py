@@ -1,31 +1,44 @@
 #!/usr/bin/env python
-import rospy
-import roslib
-import sys
+import cv2, rospy, roslib, sys
 from tf2_msgs.msg import TFMessage
-roslib.load_manifest('robot_follower')
 from std_msgs.msg import String
+roslib.load_manifest('robot_follower')
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+from geometry_msgs.msg import Vector3
 
-def callback(data):
-    #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+# position = Vector3()
+def callback1(data):
     if(data.transforms[0].child_frame_id == 'head_1'):
-        print 'x: %f, y: %f, z: %f'% (data.transforms[0].transform.translation.x, data.transforms[0].transform.translation.y, data.transforms[0].transform.translation.z)
+        position = data.transforms[0].transform.translation
+        # print 'x: %f, y: %f, z: %f' % (position.x, position.y, position.z)
+
+image = cv2.
+is_image_present = 0
+def callback2(data):
+    try:
+      cv_image = CvBridge().imgmsg_to_cv2(data, "bgr8")
+    except CvBridgeError as e:
+      print(e)
+    image = cv_image
+    is_image_present = 1
     
-    #print 'hello'
-    
-def get_tf():
-
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # node are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'get_tf' node so that multiple get_tfs can
-    # run simultaneously.
-    rospy.init_node('get_tf', anonymous=True)
-
-    rospy.Subscriber("/tf", TFMessage, callback)
-
-    # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+def match_head():
+    height = 480
+    width = 640
+    rate = rospy.Rate(10)
+    cv2.namedWindow("Match /head_x (joint) to Person", 1)
+    while not rospy.is_shutdown():
+      if(is_image_present):
+        im = self.image
+      cv2.circle(im, (position.x, positiom.y), 5, (255, 0, 0))
+      cv2.imshow("Match /head_x (joint) to Person", im)
+      cv2.waitKey(3)
+      rate.sleep()
 
 if __name__ == '__main__':
-    get_tf()
+    rospy.init_node('get_tf', anonymous=True)
+    rospy.Subscriber("/camera/rgb/image_color", Image, callback2)
+    rospy.Subscriber("/tf", TFMessage, callback1)
+    match_head()
+    rospy.spin()
