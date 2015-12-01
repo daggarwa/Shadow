@@ -81,13 +81,8 @@ class face_node:
       (rows,cols,channels) = im.shape
       im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
       faces = face_cascade.detectMultiScale(im_gray, 1.3, 5)
-      # box = all_faces()
       if (len(faces) == 1):
         for (x,y,w,h) in faces:
-          # box.x.append(x)
-          # box.y.append(y)
-          # box.w.append(w)
-          # box.h.append(h)
           if ((w>100) and (h>100)):
             cv2.rectangle(im,(x,y),(x+w,y+h),(255,0,0),2)
             face_gray = np.array(im_gray[y:y+h, x:x+w], 'uint8')
@@ -95,10 +90,6 @@ class face_node:
             face_images.append(face_sized)
             face_labels.append(face_label)
             facecount += 1
-      # try:
-      #   self.f_publ.publish(box)
-      # except CvBridgeError as e:
-      #   print(e)
       cv2.imshow("Training Set Preparation", im)
       cv2.waitKey(3)
       rate.sleep()
